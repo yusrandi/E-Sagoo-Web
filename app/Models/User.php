@@ -50,4 +50,25 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function reviewsReceived()
+    {
+        return $this->hasMany(ShopReview::class, 'user_id');
+    }
+
+    /**
+     * Mendapatkan rata-rata rating toko (1 desimal)
+     */
+    public function getAvgRatingAttribute()
+    {
+        return round($this->reviewsReceived()->avg('rating'), 1);
+    }
+
+    /**
+     * Mendapatkan total ulasan toko
+     */
+    public function getTotalReviewsAttribute()
+    {
+        return $this->reviewsReceived()->count();
+    }
 }

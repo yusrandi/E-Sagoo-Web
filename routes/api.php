@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\ProductController;
+use App\Http\Controllers\Api\ShopReviewController;
 use App\Http\Controllers\Api\TransactionController;
 use App\Http\Controllers\Api\UserController;
 use Illuminate\Http\Request;
@@ -18,3 +19,6 @@ Route::post('/login', [UserController::class, 'login']);
 Route::get('/transactions', [TransactionController::class, 'index']);
 Route::post('/transactions', [TransactionController::class, 'store']);
 Route::post('/transactions/{id}/upload-slip', [TransactionController::class, 'uploadSlip']);
+
+Route::get('/shops/reviews', [ShopReviewController::class, 'index']);   // get review per toko
+Route::post('/shops/reviews', [ShopReviewController::class, 'store']);  // kirim review baru
