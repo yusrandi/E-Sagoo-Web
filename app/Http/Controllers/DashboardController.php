@@ -150,20 +150,26 @@ class DashboardController extends Controller
             ];
         }); // Ganti dengan logika untuk mengambil data transaksi
 
+        return Inertia::render('dashboard', [
+            'stats' => $stats,
+            'chartData' => $transaksiPerBulan,
+            'chartDataPie' => $chartDataPie,
+            'transactions' => $transactions,
+        ]);
 
-        if ($userRole === 'admin') {
-            return Inertia::render('dashboard', [
-                'stats' => $stats,
-                'chartData' => $transaksiPerBulan,
-                'chartDataPie' => $chartDataPie,
-                'transactions' => $transactions,
-            ]);
-        } elseif ($userRole === 'petani') {
-            return Inertia::render('dashboard-petani');
-        } elseif ($userRole === 'penjual') {
-            return Inertia::render('dashboard-penjual');
-        } else {
-            abort(403, 'Unauthorized action.');
-        }
+        // if ($userRole === 'admin') {
+        //     return Inertia::render('dashboard', [
+        //         'stats' => $stats,
+        //         'chartData' => $transaksiPerBulan,
+        //         'chartDataPie' => $chartDataPie,
+        //         'transactions' => $transactions,
+        //     ]);
+        // } elseif ($userRole === 'petani') {
+        //     return Inertia::render('dashboard-petani');
+        // } elseif ($userRole === 'penjual') {
+        //     return Inertia::render('dashboard-penjual');
+        // } else {
+        //     abort(403, 'Unauthorized action.');
+        // }
     }
 }
