@@ -94,37 +94,37 @@ class DashboardController extends Controller
         $chartDataPie = [
             [
                 'status' => 'pending',
-                'value' => $statusCounts['pending'] ?? 0,
+                'value' => (int) ($statusCounts['pending'] ?? 0),
                 'fill' => 'var(--color-pending)',
             ],
             [
                 'status' => 'waiting_payment',
-                'value' => $statusCounts['waiting_payment'] ?? 0,
+                'value' => (int) ($statusCounts['waiting_payment'] ?? 0),
                 'fill' => 'var(--color-waiting_payment)',
             ],
             [
                 'status' => 'paid',
-                'value' => $statusCounts['paid'] ?? 0,
+                'value' => (int) ($statusCounts['paid'] ?? 0),
                 'fill' => 'var(--color-paid)',
             ],
             [
                 'status' => 'verified',
-                'value' => $statusCounts['verified'] ?? 0,
+                'value' => (int) ($statusCounts['verified'] ?? 0),
                 'fill' => 'var(--color-verified)',
             ],
             [
                 'status' => 'shipped',
-                'value' => $statusCounts['shipped'] ?? 0,
+                'value' => (int) ($statusCounts['shipped'] ?? 0),
                 'fill' => 'var(--color-shipped)',
             ],
             [
                 'status' => 'completed',
-                'value' => $statusCounts['completed'] ?? 0,
+                'value' => (int) ($statusCounts['completed'] ?? 0),
                 'fill' => 'var(--color-chart-2)',
             ],
             [
                 'status' => 'cancelled',
-                'value' => $statusCounts['cancelled'] ?? 0,
+                'value' => (int) ($statusCounts['cancelled'] ?? 0),
                 'fill' => 'var(--color-cancelled)',
             ],
         ];
