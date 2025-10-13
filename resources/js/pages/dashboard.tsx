@@ -106,6 +106,8 @@ interface DashboardProps {
 }
 
 export default function Dashboard({ stats, chartData, chartDataPie, transactions }: DashboardProps) {
+    console.log({ chartDataPie });
+
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Dashboard" />
