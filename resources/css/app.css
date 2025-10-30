@@ -48,14 +48,16 @@
     --color-chart-3: var(--chart-3);
     --color-chart-4: var(--chart-4);
     --color-chart-5: var(--chart-5);
+    --color-chart-6: var(--chart-6);
+    --color-chart-7: var(--chart-7);
 
     --color-pending: var(--chart-1);
     --color-waiting_payment: var(--chart-2);
     --color-paid: var(--chart-3);
     --color-verified: var(--chart-4);
     --color-shipped: var(--chart-5);
-    --color-completed: var(--chart-1);
-    --color-cancelled: var(--chart-2);
+    --color-completed: var(--chart-6);
+    --color-cancelled: var(--chart-7);
 
     --color-sidebar: var(--sidebar);
     --color-sidebar-foreground: var(--sidebar-foreground);
@@ -89,11 +91,13 @@
     --border: oklch(0.922 0 0);
     --input: oklch(0.922 0 0);
     --ring: oklch(0.87 0 0);
-    --chart-1: oklch(0.646 0.222 41.116);
-    --chart-2: oklch(0.6 0.118 184.704);
-    --chart-3: oklch(0.398 0.07 227.392);
-    --chart-4: oklch(0.828 0.189 84.429);
-    --chart-5: oklch(0.769 0.188 70.08);
+    --chart-1: oklch(0.646 0.222 41.116); /* pending - oranye / kuning hangat */
+    --chart-2: oklch(0.6 0.118 184.704); /* waiting_payment - biru lembut */
+    --chart-3: oklch(0.398 0.07 227.392); /* paid - biru tua */
+    --chart-4: oklch(0.828 0.189 84.429); /* verified - hijau cerah */
+    --chart-5: oklch(0.769 0.188 70.08); /* shipped - hijau kekuningan */
+    --chart-6: oklch(0.85 0.18 145); /* completed - hijau toska / aqua */
+    --chart-7: oklch(0.55 0.25 25); /* cancelled - merah oranye */
     --radius: 0.625rem;
     --sidebar: oklch(0.985 0 0);
     --sidebar-foreground: oklch(0.145 0 0);
@@ -125,11 +129,13 @@
     --border: oklch(0.269 0 0);
     --input: oklch(0.269 0 0);
     --ring: oklch(0.439 0 0);
-    --chart-1: oklch(0.488 0.243 264.376);
-    --chart-2: oklch(0.696 0.17 162.48);
-    --chart-3: oklch(0.769 0.188 70.08);
-    --chart-4: oklch(0.627 0.265 303.9);
-    --chart-5: oklch(0.645 0.246 16.439);
+    --chart-1: oklch(0.646 0.222 41.116); /* pending - oranye / kuning hangat */
+    --chart-2: oklch(0.6 0.118 184.704); /* waiting_payment - biru lembut */
+    --chart-3: oklch(0.398 0.07 227.392); /* paid - biru tua */
+    --chart-4: oklch(0.828 0.189 84.429); /* verified - hijau cerah */
+    --chart-5: oklch(0.769 0.188 70.08); /* shipped - hijau kekuningan */
+    --chart-6: oklch(0.85 0.18 145); /* completed - hijau toska / aqua */
+    --chart-7: oklch(0.55 0.25 25); /* cancelled - merah oranye */
     --sidebar: oklch(0.205 0 0);
     --sidebar-foreground: oklch(0.985 0 0);
     --sidebar-primary: oklch(0.985 0 0);

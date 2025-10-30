@@ -1,4 +1,4 @@
-import { ColumnDef, flexRender, getCoreRowModel, getFilteredRowModel, useReactTable } from '@tanstack/react-table';
+import { ColumnDef, flexRender, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { router } from '@inertiajs/react';
@@ -20,6 +20,7 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
         columns,
         getCoreRowModel: getCoreRowModel(),
         getFilteredRowModel: getFilteredRowModel(), // 👈 important!
+        getPaginationRowModel: getPaginationRowModel(),
     });
 
     useEffect(() => {

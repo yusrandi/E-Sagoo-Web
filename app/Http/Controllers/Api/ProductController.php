@@ -13,13 +13,19 @@ class ProductController extends Controller
      */
     public function index()
     {
+
         $products = Product::where('status_verifikasi', 'verified')
             ->where('stock', '>', 0)
-            ->with('category', 'user') // opsional, kalau kamu mau tampilkan nama kategori atau penjual
+            ->with([
+                'category',
+                'user',
+                'images'
+            ])
             ->latest()
             ->get();
 
         return response()->json([
+            'success' => true,
             'message' => 'Daftar produk berhasil diambil',
             'data' => $products
         ]);

@@ -51,6 +51,11 @@ const navItemsByRole: Record<string, NavItem[]> = {
             href: product.index.url(),
             icon: ShoppingCart,
         },
+        {
+            title: 'Orders',
+            href: transaction.index.url(),
+            icon: ClipboardList,
+        },
     ],
     petani: [
         {
@@ -62,6 +67,11 @@ const navItemsByRole: Record<string, NavItem[]> = {
             title: 'Products',
             href: product.index.url(),
             icon: ShoppingCart,
+        },
+        {
+            title: 'Orders',
+            href: transaction.index.url(),
+            icon: ClipboardList,
         },
     ],
 };

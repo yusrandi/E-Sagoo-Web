@@ -56,19 +56,21 @@ class User extends Authenticatable
         return $this->hasMany(ShopReview::class, 'user_id');
     }
 
-    /**
-     * Mendapatkan rata-rata rating toko (1 desimal)
-     */
+
+
+    // Accessor untuk avg_rating
     public function getAvgRatingAttribute()
     {
-        return round($this->reviewsReceived()->avg('rating'), 1);
+        $rating = $this->reviewsReceived()->avg('rating');
+        return $rating ? number_format((float)$rating, 1) : '0.0';
     }
 
-    /**
-     * Mendapatkan total ulasan toko
-     */
+    // Accessor untuk total_reviews
     public function getTotalReviewsAttribute()
     {
         return $this->reviewsReceived()->count();
     }
+
+    // Optional: Append accessor ke response
+    protected $appends = ['avg_rating', 'total_reviews'];
 }

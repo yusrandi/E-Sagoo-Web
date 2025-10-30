@@ -1,9 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { TransactionStatusOptions } from '@/types/transaction-type';
 import { Table } from '@tanstack/react-table';
 import { XIcon } from 'lucide-react';
-import { DataTableFacetedFilter } from './data-table-faceted-filter';
 
 interface DataTableToolbarProps<TData> {
     table: Table<TData>;
@@ -21,11 +19,7 @@ export function DataTableToolbar<TData>({ table }: DataTableToolbarProps<TData>)
                     onChange={(event) => table.getColumn('user')?.setFilterValue(event.target.value)}
                     className="h-8 w-[150px] lg:w-[250px]"
                 />
-                <div className="flex gap-x-2">
-                    {table.getColumn('status') && (
-                        <DataTableFacetedFilter column={table.getColumn('status')} title="Status" options={TransactionStatusOptions} />
-                    )}
-                </div>
+
                 {isFiltered && (
                     <Button variant="ghost" onClick={() => table.resetColumnFilters()} className="h-8 px-2 lg:px-3">
                         Reset

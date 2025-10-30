@@ -85,41 +85,82 @@ class UserController extends Controller
     /**
      * Register user pembeli
      */
+
     public function register(Request $request)
     {
+        try {
+            // ✅ Validasi manual
+            $validator = Validator::make($request->all(), [
+                'name'     => 'required|string|max:255',
+                'email'    => 'required|email|unique:users,email',
+                'password' => 'required|string|min:6',
+            ]);
 
-        // ✅ Validasi manual
-        $validator = Validator::make($request->all(), [
-            'name'     => 'required|string|max:255',
-            'email'    => 'required|email|unique:users,email',
-            'password' => 'required|string|min:6',
-        ]);
+            $mptyUser = [
+                'id' => 0,
+                'name' => "name",
+                'bussiness_name' => "bussiness_name",
+                'address' => "address",
+                'email' => "email",
+                'email_verified_at' => now(),
+                'role' => "pembeli",
+                'status_verifikasi' => "pending",
+                'created_at' => now(),
+                'updated_at' => now(),
+                'avg_rating' => "0.0",
+                'total_reviews' => 0,
+            ];
 
-        // Jika validasi gagal
-        if ($validator->fails()) {
+            // Jika validasi gagal
+            if ($validator->fails()) {
+                $errors = $validator->errors();
+
+                // Ambil pesan error pertama atau custom message
+                $errorMessage = '';
+                if ($errors->has('name')) {
+                    $errorMessage = 'Nama lengkap harus diisi (maksimal 255 karakter)';
+                } elseif ($errors->has('email')) {
+                    if (str_contains($errors->first('email'), 'taken')) {
+                        $errorMessage = 'Email sudah terdaftar, silakan gunakan email lain';
+                    } else {
+                        $errorMessage = 'Format email tidak valid';
+                    }
+                } elseif ($errors->has('password')) {
+                    $errorMessage = 'Password minimal 6 karakter';
+                } else {
+                    $errorMessage = 'Data yang dimasukkan tidak valid';
+                }
+
+                return response()->json([
+                    'success' => false,
+                    'message' => $errorMessage,
+                    'data' => $mptyUser
+                ], 422);
+            }
+
+            // ✅ Create user
+            $user = User::create([
+                'name'     => $request->name,
+                'email'    => $request->email,
+                'password' => Hash::make($request->password),
+                'role'     => 'pembeli', // ✅ otomatis pembeli
+            ]);
+
+            // ✅ Optional: Login user setelah registrasi
+            // Auth::login($user);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Registrasi berhasil! Silakan login untuk melanjutkan',
+                'data' => $mptyUser
+            ], 201);
+        } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Validasi gagal',
-                'errors'  => $validator->errors(),
-            ], 422);
+                'message' => 'Terjadi kesalahan server. Silakan coba lagi.',
+                'data' => $mptyUser
+            ], 500);
         }
-
-        $user = User::create([
-            'name'     => $request->name,
-            'email'    => $request->email,
-            'password' => Hash::make($request->password),
-            'role'     => 'pembeli', // ✅ otomatis pembeli
-        ]);
-
-
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Registrasi berhasil',
-            'data' => [
-                'user' => $user
-            ]
-        ]);
     }
 
     /**
@@ -141,6 +182,21 @@ class UserController extends Controller
             ], 422);
         }
 
+        $mptyUser = [
+            'id' => 0,
+            'name' => "",
+            'bussiness_name' => null,
+            'address' => null,
+            'email' => "",
+            'email_verified_at' => null,
+            'role' => "pembeli",
+            'status_verifikasi' => "unverified",
+            'created_at' => now(),
+            'updated_at' => now(),
+            'avg_rating' => "0",
+            'total_reviews' => 0,
+        ];
+
         // ✅ Cari user dengan role pembeli
         $user = User::where('email', $request->email)
             ->where('role', 'pembeli')
@@ -151,6 +207,7 @@ class UserController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Email atau password salah',
+                'data'   => $mptyUser,
             ], 401);
         }
 
@@ -159,6 +216,7 @@ class UserController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Akun belum diverifikasi oleh admin',
+                'data'   => $mptyUser,
             ], 403);
         }
 
@@ -169,10 +227,7 @@ class UserController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Login berhasil',
-            'data'    => [
-                'user'  => $user,
-                // 'token' => $token,
-            ]
+            'data'    => $user,
         ], 200);
     }
 }

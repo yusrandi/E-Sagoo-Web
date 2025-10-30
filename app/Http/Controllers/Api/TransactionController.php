@@ -17,7 +17,7 @@ class TransactionController extends Controller
     public function index()
     {
         $transactions = Transaction::all();
-        return response()->json(['status' => 'success', 'data' => $transactions, 'message' => 'List of transactions'], 200);
+        return response()->json(['success' => true, 'data' => $transactions, 'message' => 'List of transactions'], 200);
     }
 
     /**
@@ -35,7 +35,7 @@ class TransactionController extends Controller
     {
         // ✅ Validasi input
         $validator = Validator::make($request->all(), [
-            'user.id' => 'required|exists:users,id',
+            'userId' => 'required|exists:users,id',
             'items' => 'required|array|min:1',
             'items.*.product_id' => 'required|exists:products,id',
             'items.*.quantity' => 'required|integer|min:1',
@@ -43,22 +43,23 @@ class TransactionController extends Controller
 
         if ($validator->fails()) {
             return response()->json([
-                'status' => false,
+                'success' => false,
                 'message' => 'Validasi gagal',
                 'errors' => $validator->errors(),
             ], 422);
         }
 
-        $userId = $request->input('user.id'); // ✅ Ambil ID user dari payload
+        $buyerId = $request->input('userId'); // ✅ Pembeli
 
         DB::beginTransaction();
 
         try {
-            $totalAmount = 0;
-            $itemsData = [];
+            // ✅ Kelompokkan items berdasarkan seller (pemilik produk)
+            $itemsBySeller = [];
 
             foreach ($request->items as $item) {
-                $product = Product::findOrFail($item['product_id']);
+                $product = Product::with('user')->findOrFail($item['product_id']);
+                $sellerId = $product->user_id; // ID penjual
 
                 // ✅ Cek stok produk
                 if ($product->stock < $item['quantity']) {
@@ -67,43 +68,61 @@ class TransactionController extends Controller
 
                 $price = $product->price;
                 $subtotal = $price * $item['quantity'];
-                $totalAmount += $subtotal;
 
-                $itemsData[] = [
+                if (!isset($itemsBySeller[$sellerId])) {
+                    $itemsBySeller[$sellerId] = [
+                        'seller_id' => $sellerId,
+                        'seller_name' => $product->user->name, // optional
+                        'total_amount' => 0,
+                        'items' => []
+                    ];
+                }
+
+                $itemsBySeller[$sellerId]['items'][] = [
                     'product_id' => $product->id,
                     'quantity'   => $item['quantity'],
                     'price'      => $price,
                     'subtotal'   => $subtotal,
                 ];
 
-                // ✅ Kurangi stok
-                $product->decrement('stock', $item['quantity']);
+                $itemsBySeller[$sellerId]['total_amount'] += $subtotal;
             }
 
-            // ✅ Buat transaksi
-            $transaction = Transaction::create([
-                'user_id'      => $userId,
-                'total_amount' => $totalAmount,
-                'status'       => 'waiting_payment',
-            ]);
+            $transactions = [];
 
-            // ✅ Simpan item transaksi
-            foreach ($itemsData as $data) {
-                $transaction->items()->create($data);
+            // ✅ Buat transaksi untuk setiap seller
+            foreach ($itemsBySeller as $sellerData) {
+                $transaction = Transaction::create([
+                    'user_id'      => $buyerId, // Pembeli
+                    'seller_id'    => $sellerData['seller_id'], // Penjual
+                    'total_amount' => $sellerData['total_amount'],
+                    'status'       => 'waiting_payment',
+                ]);
+
+                // ✅ Simpan item transaksi
+                foreach ($sellerData['items'] as $itemData) {
+                    $transaction->items()->create($itemData);
+
+                    // ✅ Kurangi stok produk
+                    Product::where('id', $itemData['product_id'])
+                        ->decrement('stock', $itemData['quantity']);
+                }
+
+                $transactions[] = $transaction->load('items.product');
             }
 
             DB::commit();
 
             return response()->json([
-                'status'  => true,
+                'success'  => true,
                 'message' => 'Transaksi berhasil dibuat',
-                'data'    => $transaction->load('items.product'),
+                'data'    => $transactions,
             ], 201);
         } catch (\Throwable $e) {
             DB::rollBack();
 
             return response()->json([
-                'status'  => false,
+                'success'  => false,
                 'message' => 'Gagal membuat transaksi: ' . $e->getMessage(),
             ], 500);
         }
@@ -149,7 +168,7 @@ class TransactionController extends Controller
 
         if ($validator->fails()) {
             return response()->json([
-                'status' => false,
+                'success' => false,
                 'message' => 'Validasi gagal',
                 'errors' => $validator->errors(),
             ], 422);
@@ -158,7 +177,7 @@ class TransactionController extends Controller
         $transaction = Transaction::find($id);
         if (!$transaction) {
             return response()->json([
-                'status' => false,
+                'success' => false,
                 'message' => 'Transaksi tidak ditemukan',
             ], 404);
         }
@@ -172,10 +191,24 @@ class TransactionController extends Controller
             'status' => 'paid',
         ]);
 
+        // ✅ Load relasi items dengan product
+        $transaction->load(['items.product', 'items.product.images']);
+
         return response()->json([
-            'status' => true,
+            'success' => true,
             'message' => 'Bukti pembayaran berhasil diupload, menunggu verifikasi admin',
             'data' => $transaction,
+        ]);
+    }
+
+    public function showByUser($userId)
+    {
+        $transactions = Transaction::where('user_id', $userId)->with(['items.product.images', 'items.product.user'])->orderBy('created_at', 'desc')->get();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Daftar transaksi pengguna berhasil diambil',
+            'data' => $transactions,
         ]);
     }
 }

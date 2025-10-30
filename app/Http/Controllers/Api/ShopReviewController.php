@@ -22,6 +22,7 @@ class ShopReviewController extends Controller
                 return [
                     'id' => $shop->id,
                     'name' => $shop->name,
+                    'shop_name' => $shop->bussiness_name,
                     'avg_rating' => $shop->avg_rating ? number_format($shop->avg_rating, 1) : '0.0',
                     'total_reviews' => $shop->total_reviews,
                     'reviews' => $shop->reviewsReceived->map(function ($r) {
@@ -70,6 +71,7 @@ class ShopReviewController extends Controller
         ]);
 
         return response()->json([
+            'success' => true,
             'message' => 'Ulasan berhasil disimpan',
             'data' => $review,
         ], 201);

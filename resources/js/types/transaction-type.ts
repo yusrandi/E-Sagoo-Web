@@ -1,6 +1,7 @@
 export interface TransactionType {
     id: number;
     user: string;
+    shop: string;
     total_amount: number;
     payment_slip: string;
     status: string;
