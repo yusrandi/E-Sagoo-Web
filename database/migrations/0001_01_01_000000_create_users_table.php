@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('password');
             $table->enum('role', ['admin', 'penjual', 'pembeli', 'petani'])->default('penjual');
             $table->enum('status_verifikasi', ['pending', 'verified', 'rejected'])->default('pending');
+            $table->boolean('is_active')->default(true);
             $table->rememberToken();
             $table->timestamps();
         });

@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Http\Response;
 
 class UserController extends Controller
 {
@@ -197,10 +198,20 @@ class UserController extends Controller
             'total_reviews' => 0,
         ];
 
+
+
         // ✅ Cari user dengan role pembeli
         $user = User::where('email', $request->email)
             ->where('role', 'pembeli')
             ->first();
+
+        if (!$user || $user->is_active === false) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Akun tidak terdaftar',
+                'data'   => $mptyUser,
+            ], 403);
+        }
 
         // ❌ Email tidak ditemukan atau password salah
         if (!$user || !Hash::check($request->password, $user->password)) {
@@ -220,6 +231,8 @@ class UserController extends Controller
             ], 403);
         }
 
+
+
         // ✅ Generate token Sanctum
         // $token = $user->createToken('auth_token')->plainTextToken;
 
@@ -229,5 +242,52 @@ class UserController extends Controller
             'message' => 'Login berhasil',
             'data'    => $user,
         ], 200);
+    }
+
+    public function deactivateAccount($id)
+    {
+        try {
+            // Cari user berdasarkan ID
+            $user = User::find($id);
+
+            // Jika user tidak ditemukan
+            if (!$user) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'User tidak ditemukan'
+                ], Response::HTTP_NOT_FOUND);
+            }
+
+            // Jika user sudah non-aktif (is_active = 0)
+            if ($user->is_active == 0) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Akun sudah dalam status non-aktif',
+                    'data' => $user
+                ], Response::HTTP_BAD_REQUEST);
+            }
+
+            // Update status is_active menjadi 0 (false)
+            $user->update([
+                'is_active' => 0
+            ]);
+
+            // Optional: Revoke semua token akses (jika menggunakan Sanctum)
+            if (method_exists($user, 'tokens')) {
+                $user->tokens()->delete();
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Akun berhasil dinonaktifkan',
+                'data' => $user->fresh() // Get fresh data from database
+            ], Response::HTTP_OK);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan saat menonaktifkan akun',
+                'error' => $e->getMessage()
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 }

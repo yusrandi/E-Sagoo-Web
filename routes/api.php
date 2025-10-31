@@ -14,9 +14,13 @@ Route::get('/user', function (Request $request) {
 
 Route::get('/banks', [BankAccountController::class, 'index']);
 Route::get('/products', [ProductController::class, 'index']);
+
 Route::get('/users', [UserController::class, 'index']);
 Route::post('/register', [UserController::class, 'register']);
 Route::post('/login', [UserController::class, 'login']);
+
+// Non-aktifkan akun dengan GET dan parameter ID
+Route::get('/account/deactivate/{id}', [UserController::class, 'deactivateAccount']);
 
 Route::get('/transactions', [TransactionController::class, 'index']);
 Route::post('/transactions', [TransactionController::class, 'store']);
