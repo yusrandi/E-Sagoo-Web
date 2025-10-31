@@ -98,4 +98,9 @@ class UserController extends Controller
             'user' => $user,
         ]);
     }
+
+    public function deleteAccountGuidence()
+    {
+        return Inertia::render('delete-account-page');
+    }
 }

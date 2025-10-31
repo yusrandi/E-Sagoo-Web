@@ -9,6 +9,7 @@ Route::get('/', function () {
 })->name('home');
 
 Route::get('/privacy', [App\Http\Controllers\PrivacyController::class, 'index'])->name('privacy');
+Route::get('/delete-account', [App\Http\Controllers\UserController::class, 'deleteAccountGuidence'])->name('delete-account');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', [App\Http\Controllers\DashboardController::class, 'index'])->name('dashboard');
