@@ -298,24 +298,37 @@ class DashboardController extends Controller
             }
         }
 
-        // dd($myShop);
-        if ($user->role === 'admin') {
-            return Inertia::render('dashboard', [
-                'stats' => $stats,
-                'chartData' => $transaksiPerBulan,
-                'chartDataPie' => $chartDataPie,
-                'transactions' => $transactions,
-                'shopReviews' => $shopReviews,
-            ]);
-        } else {
-            return Inertia::render('dashboard-penjual', [
-                'stats' => $penjualStats,
-                'shopReviews' => $shopReviews,
-                'chartData' => $transaksiPerBulan,
-                'chartDataPie' => $chartDataPie,
-                'shopReviews' => $myShop,
-                'transactions' => $transactions,
-            ]);
+
+        switch ($user->role) {
+            case 'admin':
+                return Inertia::render('dashboard', [
+                    'stats' => $stats,
+                    'chartData' => $transaksiPerBulan,
+                    'chartDataPie' => $chartDataPie,
+                    'transactions' => $transactions,
+                    'shopReviews' => $shopReviews,
+                ]);
+
+            case 'penjual':
+                return Inertia::render('dashboard-penjual', [
+                    'stats' => $penjualStats,
+                    'shopReviews' => $myShop,
+                    'chartData' => $transaksiPerBulan,
+                    'chartDataPie' => $chartDataPie,
+                    'transactions' => $transactions,
+                ]);
+
+            case 'petani':
+                return Inertia::render('dashboard-petani', [
+                    'stats' => $penjualStats,
+                    'shopReviews' => $myShop,
+                    'chartData' => $transaksiPerBulan,
+                    'chartDataPie' => $chartDataPie,
+                    'transactions' => $transactions,
+                ]);
+
+            default:
+                abort(403, 'Role tidak dikenali');
         }
     }
 }

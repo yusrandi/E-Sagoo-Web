@@ -103,7 +103,7 @@ export default function CreateProductPage({ categories, productSelected }: props
 
                 reset();
                 clearErrors();
-                toast.success('Success kok kepanggil');
+                // toast.success('Success kok kepanggil');
                 toast.success(`Product ${productSelected ? 'updated' : 'created'} successfully`);
             },
             onError: (errors) => {

@@ -3,13 +3,16 @@ import { NavMain } from '@/components/nav-main';
 import { NavUser } from '@/components/nav-user';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { dashboard } from '@/routes';
+import aktivitasBudidaya from '@/routes/aktivitas-budidaya';
+import catatanBudidaya from '@/routes/catatan-budidaya';
 import category from '@/routes/category';
+import lokasi from '@/routes/lokasi';
 import product from '@/routes/product';
 import transaction from '@/routes/transaction';
 import user from '@/routes/user';
 import { SharedData, type NavItem } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
-import { BookOpen, ClipboardList, Folder, LayoutGrid, ShoppingCart, User2, Utensils } from 'lucide-react';
+import { BookOpen, ClipboardList, Folder, LayoutGrid, Navigation, ShoppingCart, Shovel, Sprout, User2, Utensils } from 'lucide-react';
 import AppLogo from './app-logo';
 
 const navItemsByRole: Record<string, NavItem[]> = {
@@ -38,6 +41,21 @@ const navItemsByRole: Record<string, NavItem[]> = {
             title: 'Users',
             href: user.index.url(),
             icon: User2,
+        },
+        {
+            title: 'Lokasi Kebun',
+            href: lokasi.index.url(),
+            icon: Navigation,
+        },
+        {
+            title: 'Aktivitas Budidaya',
+            href: aktivitasBudidaya.index.url(),
+            icon: Shovel,
+        },
+        {
+            title: 'Catatan Budidaya',
+            href: catatanBudidaya.index.url(),
+            icon: Sprout,
         },
     ],
     penjual: [
@@ -72,6 +90,21 @@ const navItemsByRole: Record<string, NavItem[]> = {
             title: 'Orders',
             href: transaction.index.url(),
             icon: ClipboardList,
+        },
+        {
+            title: 'Lokasi Kebun',
+            href: lokasi.index.url(),
+            icon: Navigation,
+        },
+        {
+            title: 'Aktivitas Budidaya',
+            href: aktivitasBudidaya.index.url(),
+            icon: Shovel,
+        },
+        {
+            title: 'Catatan Budidaya',
+            href: catatanBudidaya.index.url(),
+            icon: Sprout,
         },
     ],
 };

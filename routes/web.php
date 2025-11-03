@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\LokasiKebunController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -24,6 +25,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('transaction', App\Http\Controllers\TransactionController::class);
     Route::put('/transaction/{id}/status', [App\Http\Controllers\TransactionController::class, 'updateStatus'])
         ->name('transaction.status');
+
+    Route::resource('lokasi', LokasiKebunController::class);
+    Route::resource('aktivitas-budidaya', App\Http\Controllers\AktivitasBudidayaController::class);
+    Route::resource('catatan-budidaya', App\Http\Controllers\CatatanBudidayaController::class);
 });
 
 require __DIR__ . '/settings.php';
